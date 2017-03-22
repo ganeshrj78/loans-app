@@ -1,0 +1,29 @@
+<!--create-application.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+ <div class="row">
+
+     {{ range .applications }}
+     <div class="col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">{{.Name}} <span class="badge pull-right">{{.Loan}}</span></div>
+           <div class="panel-body">
+                   <div>{{.Address}}</div>
+                   <div>
+                   {{ if eq .Status "Approved" }}
+                   <span class="label label-success pull-right">{{.Status}}</span>
+                  {{ else if eq .Status "Rejected" }}
+                    <span class="label label-danger pull-right">{{.Status}}</span>
+                   {{ else }}
+                   <span class="label label-info pull-right">{{.Status}}</span>                   
+                 {{ end }}
+                 </div>
+           </div>
+        </div>
+     </div>
+    {{ end }}
+ </div>
+    
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}
