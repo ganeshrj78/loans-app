@@ -45,7 +45,7 @@ func getApplications(c *gin.Context) []application {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
-	baseURL := "https://localhost:8443/gateway/sandbox/webhdfs/v1/user/guest/example/"
+	baseURL := "https://localhost:8443/gateway/unwise/webhdfs/v1/user/guest/example/"
 	url := fmt.Sprintf("%s%s", baseURL, "?OP=LISTSTATUS")
 	req, err := http.NewRequest("GET", url, nil)
 	expiration := time.Now().Add(365 * 24 * time.Hour)
@@ -120,7 +120,7 @@ func submitApplication(application *application, c *gin.Context) {
 	client := &http.Client{Transport: tr}
 	filename := strconv.Itoa(application.ID)
 
-	url := "https://localhost:8443/gateway/sandbox/webhdfs/v1/user/guest/example/" + filename + "?op=CREATE"
+	url := "https://localhost:8443/gateway/unwise/webhdfs/v1/user/guest/example/" + filename + "?op=CREATE"
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(content))
 	// req.SetBasicAuth("guest", "guest-password")
 	expiration := time.Now().Add(365 * 24 * time.Hour)
