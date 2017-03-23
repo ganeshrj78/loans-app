@@ -10,29 +10,34 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func showIndexPage(c *gin.Context) {
-	userName, _ := c.GetQuery("user.name")
-	render(c, gin.H{"title": "Home Page", "user": userName}, "index.html")
+	m := createParamMap(c)
+	m["title"] = "Home Page"
+	render(c, m, "index.html")
 }
 
 func showApplicationCreationPage(c *gin.Context) {
-	userName, _ := c.GetQuery("user.name")
-	render(c, gin.H{"title": "Create New Application", "user": userName}, "create-application.html")
+	m := createParamMap(c)
+	m["title"] = "Create New Application"
+	render(c, m, "create-application.html")
 }
 
 func getApplicationsPage(c *gin.Context) {
-	userName, _ := c.GetQuery("user.name")
+	m := createParamMap(c)
+	m["title"] = "Applications"
 	var applicationList = getApplications(c)
-	render(c, gin.H{"title": "Applications", "applications": applicationList, "user": userName}, "view-applications.html")
+	m["applications"] = applicationList
+	render(c, m, "view-applications.html")
 }
 
 func getApplications(c *gin.Context) []application {
-	// var applicationList = getAllApplications()
+	host, tenant := getHostAndTenant(c.Request)
 	var applicationList = []application{}
 	jwttoken, err := c.Cookie("hadoop-jwt")
 
@@ -45,7 +50,8 @@ func getApplications(c *gin.Context) []application {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
-	baseURL := "https://localhost:8443/gateway/unwise/webhdfs/v1/user/guest/example/"
+	baseURL := fmt.Sprintf("https://%s/gateway/%s/webhdfs/v1/user/guest/example/", host, tenant)
+
 	url := fmt.Sprintf("%s%s", baseURL, "?OP=LISTSTATUS")
 	req, err := http.NewRequest("GET", url, nil)
 	expiration := time.Now().Add(365 * 24 * time.Hour)
@@ -68,6 +74,14 @@ func getApplications(c *gin.Context) []application {
 	}
 
 	return applicationList
+}
+
+func getHostAndTenant(request *http.Request) (string, string) {
+	host := request.Header.Get("X-Forwarded-Host")
+	fmt.Print(host)
+	hostparts := strings.Split(host, ".")
+	tenant := hostparts[1]
+	return host, tenant
 }
 
 func getApplication(response *http.Response) application {
@@ -133,6 +147,7 @@ func submitApplication(application *application, c *gin.Context) {
 }
 
 func createApplication(c *gin.Context) {
+	userName, _ := c.GetQuery("user.name")
 	name := c.PostForm("name")
 	address := c.PostForm("address")
 	loan, _ := strconv.Atoi(c.PostForm("loan"))
@@ -141,6 +156,22 @@ func createApplication(c *gin.Context) {
 	submitApplication(a, c)
 	render(c, gin.H{
 		"title":   "Submission Successful",
-		"payload": a}, "submission-successful.html")
+		"payload": a,
+		"user":    userName}, "submission-successful.html")
 
+}
+
+func createParamMap(c *gin.Context) map[string]interface{} {
+	userName, _ := c.GetQuery("user.name")
+	_, tenant := getHostAndTenant(c.Request)
+	banner := "Acme Loans"
+	bannerLead := "Generic loaning company"
+	if tenant == "goodloans" {
+		banner = "Good Loans Lending Institute"
+		bannerLead = "Just a really good loan company"
+	} else if tenant == "unwise" {
+		banner = "Unwise Lending"
+		bannerLead = "Lending to people we like"
+	}
+	return gin.H{"user": userName, "banner": banner, "bannerLead": bannerLead}
 }
