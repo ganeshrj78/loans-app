@@ -50,7 +50,7 @@ func getApplications(c *gin.Context) []application {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
-	baseURL := fmt.Sprintf("https://%s/gateway/%s/webhdfs/v1/user/guest/example/", host, tenant)
+	baseURL := fmt.Sprintf("https://%s/gateway/%s/webhdfs/v1/%s/applications/", host, tenant, tenant)
 
 	url := fmt.Sprintf("%s%s", baseURL, "?OP=LISTSTATUS")
 	req, err := http.NewRequest("GET", url, nil)
@@ -116,7 +116,7 @@ func getFileList(response *http.Response) []string {
 }
 
 func submitApplication(application *application, c *gin.Context) {
-	// userName, _ := c.GetQuery("user.name")
+	host, tenant := getHostAndTenant(c.Request)
 	content, err := json.Marshal(application)
 	if err != nil {
 		log.Fatal(err)
@@ -133,10 +133,12 @@ func submitApplication(application *application, c *gin.Context) {
 	}
 	client := &http.Client{Transport: tr}
 	filename := strconv.Itoa(application.ID)
+	baseURL := fmt.Sprintf("https://%s/gateway/%s/webhdfs/v1/%s/applications/", host, tenant, tenant)
 
-	url := "https://localhost:8443/gateway/unwise/webhdfs/v1/user/guest/example/" + filename + "?op=CREATE"
+	url := fmt.Sprintf("%s%s%s", baseURL, filename, "?op=CREATE")
+
+	// url := "https://localhost:8443/gateway/unwise/webhdfs/v1/user/guest/example/" + filename + "?op=CREATE"
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(content))
-	// req.SetBasicAuth("guest", "guest-password")
 	expiration := time.Now().Add(365 * 24 * time.Hour)
 	cookie := http.Cookie{Name: "hadoop-jwt", Value: jwttoken, Expires: expiration}
 	req.AddCookie(&cookie)
@@ -147,18 +149,15 @@ func submitApplication(application *application, c *gin.Context) {
 }
 
 func createApplication(c *gin.Context) {
-	userName, _ := c.GetQuery("user.name")
 	name := c.PostForm("name")
 	address := c.PostForm("address")
 	loan, _ := strconv.Atoi(c.PostForm("loan"))
 
 	a := createNewApplication(name, address, loan)
 	submitApplication(a, c)
-	render(c, gin.H{
-		"title":   "Submission Successful",
-		"payload": a,
-		"user":    userName}, "submission-successful.html")
-
+	m := createParamMap(c)
+	m["title"] = "Submission Successful"
+	render(c, m, "submission-successful.html")
 }
 
 func createParamMap(c *gin.Context) map[string]interface{} {
