@@ -39,7 +39,7 @@
             </param>
             <param>
                 <name>redirectToUrl</name>
-                <value>/gateway/unwise-sso/knoxauth/login.html</value>
+                <value>/gateway/unwise-sso/unwise-auth/login.html</value>
             </param>
             <param>
                 <name>restrictedCookies</name>
@@ -59,7 +59,7 @@
             </param>
             <param>
                 <name>main.ldapRealm.userDnTemplate</name>
-                <value>uid={0},ou=people,dc=hadoop,dc=apache,dc=org</value>
+                <value>uid={0},ou=unwise,dc=hadoop,dc=apache,dc=org</value>
             </param>
             <param>
                 <name>main.ldapRealm.contextFactory.url</name>
@@ -79,23 +79,20 @@
             </param>
         </provider>
 
-        <provider>
-            <role>identity-assertion</role>
-            <name>Default</name>
-            <enabled>true</enabled>
-        </provider>
-
-        <provider>
-            <role>hostmap</role>
-            <name>static</name>
-            <enabled>true</enabled>
-            <param><name>localhost</name><value>sandbox,sandbox.hortonworks.com</value></param>
-        </provider>
+<provider>
+    <role>identity-assertion</role>
+    <name>Concat</name>
+    <enabled>true</enabled>
+    <param>
+        <name>concat.suffix</name>
+        <value>_unwise</value>
+    </param>
+</provider>
 
     </gateway>
 
     <application>
-      <name>knoxauth</name>
+      <name>unwise-auth</name>
     </application>
 
     <service>

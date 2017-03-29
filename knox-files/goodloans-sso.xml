@@ -39,7 +39,7 @@
             </param>
             <param>
                 <name>redirectToUrl</name>
-                <value>/gateway/goodloans-sso/knoxauth/login.html</value>
+                <value>/gateway/goodloans-sso/goodloans-auth/login.html</value>
             </param>
             <param>
                 <name>restrictedCookies</name>
@@ -59,7 +59,7 @@
             </param>
             <param>
                 <name>main.ldapRealm.userDnTemplate</name>
-                <value>uid={0},ou=people,dc=hadoop,dc=apache,dc=org</value>
+                <value>uid={0},ou=goodloans,dc=hadoop,dc=apache,dc=org</value>
             </param>
             <param>
                 <name>main.ldapRealm.contextFactory.url</name>
@@ -79,16 +79,20 @@
             </param>
         </provider>
 
-        <provider>
-            <role>identity-assertion</role>
-            <name>Default</name>
-            <enabled>true</enabled>
-        </provider>
+<provider>
+    <role>identity-assertion</role>
+    <name>Concat</name>
+    <enabled>true</enabled>
+    <param>
+        <name>concat.suffix</name>
+        <value>_goodloans</value>
+    </param>
+</provider>
 
     </gateway>
 
     <application>
-      <name>knoxauth</name>
+      <name>goodloans-auth</name>
     </application>
 
     <service>
