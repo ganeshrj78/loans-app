@@ -1,1 +1,7 @@
-{"id":5577006791947779410,"name":"Farm and Fisherman","address":"1442 Marlton Pike E\r\nCherry Hill, NJ 08034","status":"Approved","loan":50000}
+{
+    "id":5577006791947779410,
+    "name":"Farm and Fisherman",
+    "address":"1442 Marlton Pike E\r\nCherry Hill, NJ 08034",
+    "status":"Approved",
+    "loan":50000
+}

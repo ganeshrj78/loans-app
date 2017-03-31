@@ -43,6 +43,8 @@ The following setup is needed on that VM:
  groupadd loanscore
 
  useradd loanscore -g loanscore
+
+ useradd admin -g loanscore
  
  groupadd unwise
 
@@ -55,21 +57,29 @@ The following setup is needed on that VM:
 
  useradd bob_goodloans -g goodloans
 
-3. Create the folders for the tenants
+3. Create the folders for the tenants (as user hdfs)
 
 hdfs dfs -mkdir -p /unwise/applications
 
 hdfs dfs -mkdir -p /goodloans/applications
 
+hdfs dfs -mkdir -p /loanscore/scores
+
 hdfs dfs -chmod 770 /unwise/applications
 
-hdfs dfs -chmod 770 /goodloans/applications
+hdfs dfs -chmod 770 /loanscore/scores
 
-hdfs dfs -chown -R loanscore:unwise /unwise
+hdfs dfs -chmod 770 /unwise/applications
 
-hdfs dfs -chown -R loanscore:goodloans /goodloans
+hdfs dfs -chown -R hdfs:unwise /unwise
+
+hdfs dfs -chown -R hdfs:goodloans /goodloans
+
+hdfs dfs -chown -R loanscore:loanscore /loanscore
 
 4. To seed the folders 
+
+(in this local project)
 
 cd hadoop-files
 
