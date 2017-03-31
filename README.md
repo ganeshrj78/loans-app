@@ -68,9 +68,9 @@ hdfs dfs -mkdir -p /unwise/applications
 
 hdfs dfs -mkdir -p /goodloans/applications
 
-hdfs dfs -chmod 775 /unwise/applications
+hdfs dfs -chmod 770 /unwise/applications
 
-hdfs dfs -chmod 775 /goodloans/applications
+hdfs dfs -chmod 770 /goodloans/applications
 
 hdfs dfs -chown -R loanscore:unwise /unwise
 
