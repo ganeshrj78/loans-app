@@ -79,15 +79,6 @@
             </param>
         </provider>
 
-<provider>
-    <role>identity-assertion</role>
-    <name>Concat</name>
-    <enabled>true</enabled>
-    <param>
-        <name>concat.suffix</name>
-        <value>_goodloans</value>
-    </param>
-</provider>
 
     </gateway>
 

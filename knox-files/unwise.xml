@@ -29,11 +29,15 @@
     </param>
 </provider>
 
-        <provider>
-            <role>identity-assertion</role>
-            <name>Default</name>
-            <enabled>true</enabled>
-        </provider>
+<provider>
+    <role>identity-assertion</role>
+    <name>Concat</name>
+    <enabled>true</enabled>
+    <param>
+        <name>concat.suffix</name>
+        <value>_unwise</value>
+    </param>
+</provider>
 
     </gateway>
     <service>

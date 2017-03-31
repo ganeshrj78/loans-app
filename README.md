@@ -46,21 +46,14 @@ The following setup is needed on that VM:
  
  groupadd unwise
 
- useradd unwise -g unwise
-
- useradd bob_unwise -g unwise
-
  groupadd goodloans
 
- useradd goodloans -g goodloans
-
- useradd bob_goodloans -g goodloans
 
 2. Add the originator users to the tenant groups
 
-usermod -a -G unwise guest
+ useradd bob_unwise -g unwise
 
-usermod -a -G goodloans guest
+ useradd bob_goodloans -g goodloans
 
 3. Create the folders for the tenants
 
@@ -75,3 +68,15 @@ hdfs dfs -chmod 770 /goodloans/applications
 hdfs dfs -chown -R loanscore:unwise /unwise
 
 hdfs dfs -chown -R loanscore:goodloans /goodloans
+
+4. To seed the folders 
+
+cd hadoop-files
+
+cd goodloans
+
+$KNOXSHELL_HOME/bin/knoxshell.sh goodloans-seed.groovy
+
+cd ../unwise
+
+$KNOXSHELL_HOME/bin/knoxshell.sh unwise-seed.groovy 
