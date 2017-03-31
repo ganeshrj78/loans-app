@@ -69,8 +69,10 @@ func getApplications(c *gin.Context) []application {
 		resp, err = client.Do(req)
 		if err != nil {
 			fmt.Printf("Error : %s", err)
+		} else {
+			applicationList = append(applicationList, getApplication(resp))
 		}
-		applicationList = append(applicationList, getApplication(resp))
+
 	}
 
 	return applicationList
