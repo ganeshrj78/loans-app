@@ -80,7 +80,6 @@ func getApplications(c *gin.Context) []application {
 
 func getHostAndTenant(request *http.Request) (string, string) {
 	host := request.Header.Get("X-Forwarded-Host")
-	fmt.Print(host)
 	hostparts := strings.Split(host, ".")
 	tenant := hostparts[1]
 	return host, tenant
@@ -164,6 +163,8 @@ func createApplication(c *gin.Context) {
 
 func createParamMap(c *gin.Context) map[string]interface{} {
 	userName, _ := c.GetQuery("user.name")
+	userParts := strings.Split(userName, "_")
+	userName = userParts[0]
 	_, tenant := getHostAndTenant(c.Request)
 	banner := "Acme Loans"
 	bannerLead := "Generic loaning company"
